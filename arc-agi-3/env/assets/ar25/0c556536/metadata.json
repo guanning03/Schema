@@ -1,0 +1,19 @@
+{
+  "game_id": "ar25-0c556536",
+  "title": "AR25",
+  "default_fps": 6,
+  "tags": [
+    "keyboard_click"
+  ],
+  "baseline_actions": [
+    32,
+    50,
+    75,
+    37,
+    89,
+    159,
+    233,
+    73
+  ],
+  "date_downloaded": "2026-05-27T11:01:32.956748+00:00"
+}

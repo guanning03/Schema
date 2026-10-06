@@ -1,0 +1,16 @@
+#!/bin/bash
+set -euo pipefail
+
+real="${CRUN_REAL:-$(command -v crun || echo /usr/bin/crun)}"
+
+args=()
+injected=0
+for a in "$@"; do
+  args+=("$a")
+  if [[ $injected -eq 0 && ( "$a" == "create" || "$a" == "run" ) ]]; then
+    args+=("--no-new-keyring")
+    injected=1
+  fi
+done
+
+exec "$real" "${args[@]}"
