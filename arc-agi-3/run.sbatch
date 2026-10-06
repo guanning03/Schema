@@ -19,6 +19,6 @@ export XDG_RUNTIME_DIR="$TMPDIR/arc-podman/run"
 mkdir -p "$XDG_RUNTIME_DIR"
 export ARC_SANDBOX_CACHE="${ARC_SANDBOX_CACHE:-$HOME/.cache/arc-sandbox}"
 mkdir -p "$ARC_SANDBOX_CACHE"
-export CLAUDE_CONFIG_DIR="${CLAUDE_CONFIG_DIR:-$HOME/.claude-arc-agent}"
+export CLAUDE_CONFIG_DIR="${CLAUDE_CONFIG_DIR:-$HOME/.claude}"
 
 python -m agent.world_model.solve --provider claude --jail "$@"

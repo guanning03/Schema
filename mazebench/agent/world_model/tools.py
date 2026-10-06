@@ -7,6 +7,7 @@ import os
 import re
 import shutil
 import signal
+import sys
 import threading
 import time
 from pathlib import Path
@@ -652,6 +653,17 @@ _EXEC_SPECS = [
                                      "timeout": {"type": "number", "description": _EXEC_TIMEOUT_DESC}},
                       "required": ["command"]}},
 ]
+
+
+def exec_sandbox_binary() -> str:
+    if sys.platform != "linux":
+        raise RuntimeError("MazeBench execution tools require Linux and bubblewrap (bwrap).")
+    bwrap = shutil.which("bwrap")
+    if bwrap is None:
+        raise RuntimeError(
+            "bubblewrap (bwrap) is required for run_python / run_shell; "
+            "install it first (Debian/Ubuntu: sudo apt-get install bubblewrap).")
+    return bwrap
 
 
 def sandbox_cpu_count() -> int:
@@ -1547,11 +1559,7 @@ class ToolBox:
         return "\n".join(out)
 
     def _sandbox_wrap(self, cmd: list) -> list:
-        bwrap = shutil.which("bwrap")
-        if bwrap is None:
-            raise RuntimeError(
-                "no exec sandbox available (bubblewrap missing, Landlock unsupported on this "
-                "kernel) — run_python / run_shell need bubblewrap (bwrap) to run")
+        bwrap = exec_sandbox_binary()
         import sys as _sys
         wd = str(self.agent.workdir.resolve())
         prefix = str(Path(_sys.executable).resolve().parent.parent)

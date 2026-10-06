@@ -125,11 +125,10 @@ class Executor:
     def op_world_load(self, req: dict) -> dict:
         from agent.world_model.world import CodeWorldModel
         try:
-            self._world = CodeWorldModel(req["code"])
+            world = CodeWorldModel(req["code"])
         except Exception as e:
-            self._world = None
             return {"loaded": False, "error": f"{type(e).__name__}: {e}"}
-        w = self._world
+        self._world = w = world
         return {"loaded": True, "stateful": bool(w.stateful),
                 "has_is_goal": bool(w.has_goal_pred),
                 "has_win_condition": bool(w.has_win_condition),

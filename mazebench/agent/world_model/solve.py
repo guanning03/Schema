@@ -14,6 +14,7 @@ from env.maze_env import MazeEnv
 from .agent import ResumeError, WorldModelAgent
 from .events import FanoutSink
 from .obs.jsonl import JsonlSink
+from .tools import exec_sandbox_binary
 
 _TMP = Path("tmp")
 
@@ -58,6 +59,12 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv: "list | None" = None) -> int:
     args = build_parser().parse_args(argv)
     logging.basicConfig(level=logging.WARNING, format="%(message)s")
+
+    try:
+        exec_sandbox_binary()
+    except RuntimeError as e:
+        print(str(e), file=sys.stderr)
+        return 2
 
     if args.pool:
         dirs = _pool_dirs(args.pool, _POOL_BASE[args.provider])

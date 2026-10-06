@@ -57,7 +57,7 @@ export DIGBENCH_API_TOKEN=...
 cd digbench && ./run.sh medium P-1 P-2
 ```
 
-**MazeBench.** Needs the MazeBench engine (see [mazebench.com](https://mazebench.com); set `MAZEBENCH_ENGINE_ROOT`, or place it at `vendor/MazeBenchEngine`) and Node.js (`MAZEBENCH_NODE_BIN` if `node` is not on `PATH`). Default: Codex, `gpt-6-astra`, `--reasoning high`.
+**MazeBench.** Needs Linux, bubblewrap (`bwrap` on `PATH`), the MazeBench engine (see [mazebench.com](https://mazebench.com); set `MAZEBENCH_ENGINE_ROOT`, or place it at `vendor/MazeBenchEngine`) and Node.js (`MAZEBENCH_NODE_BIN` if `node` is not on `PATH`). The `run_python` / `run_shell` tools use bubblewrap; install it with `sudo apt-get install bubblewrap` on Debian/Ubuntu and ensure the host permits its user namespaces. The solver checks the platform and executable before starting a run. Default: Codex, `gpt-6-astra`, `--reasoning high`.
 
 ```
 cd mazebench

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 import shlex
+from pathlib import Path
 
 from .paths import JAIL_SOCK, JAIL_SRC, PROXY_PORT, PROXY_SOCK_NAME, PROXY_URL
 
@@ -31,7 +32,8 @@ class ClaudeContainerLaunch:
         return self.runtime.popen_env
 
     def wrap(self, base_argv: list[str], config_dir: "str | None", claude_env: dict) -> list[str]:
-        config_dir = config_dir or os.environ.get("CLAUDE_CONFIG_DIR")
+        config_dir = str(Path(config_dir or os.environ.get("CLAUDE_CONFIG_DIR")
+                              or Path.home() / ".claude").expanduser().resolve())
         claude_cli = ["claude", *base_argv[1:]]
 
         docker = self.runtime.proxy_in_container
@@ -50,14 +52,12 @@ class ClaudeContainerLaunch:
             "IS_SANDBOX": "1",
         }
         jail_env.update(claude_env)
-        if config_dir:
-            jail_env["CLAUDE_CONFIG_DIR"] = config_dir
+        jail_env["CLAUDE_CONFIG_DIR"] = config_dir
 
         mounts = [(self.stage_src, JAIL_SRC, "ro")]
         if not docker:
             mounts.append((self.proxy_sock_dir, JAIL_SOCK, "rw"))
-        if config_dir:
-            mounts.append((config_dir, config_dir, "rw"))
+        mounts.append((config_dir, config_dir, "rw"))
 
         probe_addr = f'("{self.proxy_host}",{PROXY_PORT})' if docker else f'("127.0.0.1",{PROXY_PORT})'
         bridge_up = "" if docker else (
